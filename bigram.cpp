@@ -3,6 +3,8 @@
 #include <chrono>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <unordered_map>
 #include <random>
 #include <set>
@@ -44,14 +46,27 @@ struct CachedEntropy {
 // Main entry point
 int main(int argc, char* argv[]) {
   
-  // Config
-  // TODO from arguments
+  // Configuration
   char const * input_path = "input.bin";
-  char const * output_path = "cluster.bin";
-  int num_words = 33506;
-  int num_clusters = 256;
+  char const * output_path = "output.bin";
+  int num_words = 0;
+  // TODO maybe infer num_words from input
+  int num_clusters = 128;
   int num_epochs = 100;
   // TODO early stop using swapping rate and number of epoch below swapping rate?
+  
+  // Parse arguments
+  for (int i = 1; i < argc; ++i)
+    if (std::strcmp(argv[i], "-i") == 0)
+      input_path = argv[++i];
+    else if (std::strcmp(argv[i], "-o") == 0)
+      output_path = argv[++i];
+    else if (std::strcmp(argv[i], "-w") == 0)
+      num_words = std::atoi(argv[++i]);
+    else if (std::strcmp(argv[i], "-c") == 0)
+      num_clusters = std::atoi(argv[++i]);
+    else if (std::strcmp(argv[i], "-e") == 0)
+      num_epochs = std::atoi(argv[++i]);
   
   // Instantiate entropy
   CachedEntropy<10000> entropy;
